@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import Editor from '@monaco-editor/react';
 import { PlayIcon, CheckIcon, ArrowsPointingOutIcon, ArrowsPointingInIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { ResultsPanel, TestResult } from './components/results-panel';
 
 const languageTemplates = {
   cpp: `class Solution {
@@ -57,6 +59,10 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   const [isResizing, setIsResizing] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(480);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [results, setResults] = useState<TestResult[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize panel width after component mounts
   useEffect(() => {
@@ -121,6 +127,121 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   const handleLanguageChange = (newLanguage: ProgrammingLanguage) => {
     setLanguage(newLanguage);
     setCode(languageTemplates[newLanguage]);
+  };
+
+  const handleRunCode = async () => {
+    console.log('Running code...'); // Debug
+    setIsRunning(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/run', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify({
+          language,
+          code,
+          input: ''
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        // Handle structured error response
+        const errorMessage = data.error || 'Failed to run code';
+        throw new Error(errorMessage);
+      }
+
+      // Format the result for display
+      const result: TestResult = {
+        passed: !data.stderr && !data.compile_output && data.status.id === 3,
+        input: "Custom Input",
+        expected: "N/A",
+        output: data.stdout || "No output",
+        error: formatError(data) || undefined,
+        execution_time: data.time || undefined,
+        memory_used: data.memory || undefined
+      };
+
+      setResults([result]);
+      setShowResults(true);
+
+      if (result.error) {
+        // Don't show toast for compilation errors as they're shown in the panel
+        if (!data.compile_output) {
+          toast.error('Code execution failed');
+        }
+      } else {
+        toast.success('Code executed successfully!');
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to run code');
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  // Helper function to format error messages
+  const formatError = (data: any): string | null => {
+    // Check for compilation errors first
+    if (data.compile_output && data.compile_output.trim()) {
+      return data.compile_output.trim();  // Return raw compilation error
+    }
+    
+    // Check for runtime errors
+    if (data.stderr && data.stderr.trim()) {
+      return data.stderr.trim();  // Return raw stderr
+    }
+
+    // Check for execution status errors
+    if (data.status?.id) {
+      const statusId = data.status.id;
+      if (statusId !== 3) {  // Status 3 is "Accepted"
+        return data.status.description || 'Execution failed';
+      }
+    }
+
+    return null;
+  };
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/api/challenges/${challengeId}/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify({
+          language,
+          code
+        })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit code');
+      }
+
+      setResults(data.results);
+      setShowResults(true);
+
+      if (data.success) {
+        toast.success('All test cases passed!');
+      } else {
+        toast.error('Some test cases failed. Check the results.');
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to submit code');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -256,35 +377,72 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                   <ArrowsPointingOutIcon className="h-4 w-4" />
                 )}
               </Button>
-              <Button size="sm" variant="outline">
-                <PlayIcon className="h-4 w-4 mr-1" />
-                Run
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={handleRunCode}
+                disabled={isRunning}
+              >
+                {isRunning ? (
+                  <>
+                    <div className="h-4 w-4 mr-1 animate-spin rounded-full border-2 border-b-transparent border-current" />
+                    Running...
+                  </>
+                ) : (
+                  <>
+                    <PlayIcon className="h-4 w-4 mr-1" />
+                    Run
+                  </>
+                )}
               </Button>
-              <Button size="sm" variant="default">
-                <CheckIcon className="h-4 w-4 mr-1" />
-                Submit
+              <Button 
+                size="sm" 
+                variant="default" 
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="h-4 w-4 mr-1 animate-spin rounded-full border-2 border-b-transparent border-current" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="h-4 w-4 mr-1" />
+                    Submit
+                  </>
+                )}
               </Button>
             </div>
           </div>
           <div className="flex-1 relative p-4 bg-card">
-            <Editor
-              height="100%"
-              defaultLanguage={language}
-              language={language}
-              theme="light"
-              value={code}
-              onChange={(value) => setCode(value || '')}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 14,
-                lineNumbers: 'on',
-                scrollBeyondLastLine: false,
-                automaticLayout: true,
-                tabSize: 4,
-                insertSpaces: true,
-                padding: { top: 16, bottom: 16 },
-              }}
-            />
+            <div className="h-full relative">
+              <Editor
+                height="100%"
+                defaultLanguage={language}
+                language={language}
+                theme="light"
+                value={code}
+                onChange={(value) => setCode(value || '')}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14,
+                  lineNumbers: 'on',
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  tabSize: 4,
+                  insertSpaces: true,
+                  padding: { top: 16, bottom: 16 },
+                }}
+              />
+              {showResults && (
+                <ResultsPanel 
+                  results={results} 
+                  onClose={() => setShowResults(false)}
+                  mode={isSubmitting ? 'submit' : 'run'}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

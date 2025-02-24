@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: number;
@@ -22,6 +24,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Check for stored token and user data
@@ -51,8 +54,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       localStorage.setItem('token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      Cookies.set('token', data.access_token);
       setUser(data.user);
       toast.success('Logged in successfully');
+      router.push('/dashboard');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
       throw error;
@@ -85,6 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    Cookies.remove('token');
     setUser(null);
     toast.success('Logged out successfully');
   };

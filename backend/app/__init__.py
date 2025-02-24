@@ -1,13 +1,7 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import JWTManager
-from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from config import Config
-
-db = SQLAlchemy()
-jwt = JWTManager()
-bcrypt = Bcrypt()
+from app.extensions import db, jwt, bcrypt
 
 def create_app():
     app = Flask(__name__)
@@ -21,7 +15,12 @@ def create_app():
 
     # Import and register blueprints
     from app.routes.auth import auth_bp
+    from app.routes.challenges import challenges_bp
+    from app.routes.code_execution import code_execution_bp
+    
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(challenges_bp, url_prefix='/api/challenges')
+    app.register_blueprint(code_execution_bp, url_prefix='/api')
 
     # Create database tables
     with app.app_context():
