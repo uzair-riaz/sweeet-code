@@ -1,7 +1,9 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import Cookies from 'js-cookie';
 
 interface User {
   id: number;
@@ -22,16 +24,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Check for stored token and user data
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    const token = Cookies.get('token');
+    const storedUser = Cookies.get('user');
     if (token && storedUser) {
       setUser(JSON.parse(storedUser));
+      router.push('/dashboard');
     }
     setIsLoading(false);
-  }, []);
+  }, [router]);
 
   const login = async (email: string, password: string) => {
     try {
@@ -49,10 +53,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw new Error(data.error || 'Login failed');
       }
 
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Store in cookies instead of localStorage
+      Cookies.set('token', data.access_token, { expires: 7 }); // Expires in 7 days
+      Cookies.set('user', JSON.stringify(data.user), { expires: 7 });
       setUser(data.user);
       toast.success('Logged in successfully');
+      router.push('/dashboard');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Login failed');
       throw error;
@@ -83,10 +89,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    // Remove from cookies instead of localStorage
+    Cookies.remove('token');
+    Cookies.remove('user');
     setUser(null);
     toast.success('Logged out successfully');
+    router.push('/');
   };
 
   return (
