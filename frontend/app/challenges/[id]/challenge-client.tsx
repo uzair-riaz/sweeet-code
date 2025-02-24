@@ -53,7 +53,7 @@ interface ChallengeClientProps {
 }
 
 export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
-  const { user } = useAuth();
+  const { user, getToken } = useAuth();
   const [language, setLanguage] = useState<ProgrammingLanguage>('cpp');
   const [code, setCode] = useState(languageTemplates.cpp);
   const [isResizing, setIsResizing] = useState(false);
@@ -130,15 +130,18 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   };
 
   const handleRunCode = async () => {
-    console.log('Running code...'); // Debug
     setIsRunning(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = await getToken();
+      if (!token) {
+        throw new Error('Please login to continue');
+      }
+
       const response = await fetch('http://localhost:5000/api/run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           language,
