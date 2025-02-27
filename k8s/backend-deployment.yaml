@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sweeet-code
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sweeet-code
+  template:
+    metadata:
+      labels:
+        app: sweeet-code
+    spec:
+      containers:
+      - name: sweeet-code
+        image: gcr.io/perfect-operand-451118-j4/lms-app:latest  # Replace with your image
+        ports:
+        - containerPort: 8000
+        env:  # Add environment variables for database connection, etc.
+          - name: DB_HOST
+            value: "cloud-sql-proxy-address"  # Use Cloud SQL Proxy in sidecar container
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials #K8s secrets
+                key: username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credentials
+                key: password
+          - name: DB_NAME
+            value: "sweeet-code-database"
+        # Add resource requests and limits as needed
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: db-credentials
+type: Opaque
+data:
+    username: c3dlZWV0LWNvZGUtdXNlcg==
+    password: c2VjcmV0X3Bhc3N3b3Jk

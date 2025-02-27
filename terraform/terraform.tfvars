@@ -1,0 +1,12 @@
+project_id                = "perfect-operand-451118-j4"
+db_password               = "secret_password"
+deletion_protection       = false
+cluster_name              = "sweeet-code-cluster"
+region                    = "us-central1"
+zone                      = "us-central1-f"
+db_instance_name          = "sweeet-code-instance"
+db_tier                   = "db-f1-micro"
+db_name                   = "sweeet-code-database"
+db_user                   = "sweeet-code-user"
+redis_cache_instance_id   = "sweeet-code-redis"
+machine_type              = "n1-standard-4"
