@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { useState } from 'react';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -53,19 +53,12 @@ export function LoginForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Login'}
           </Button>
           <p className="text-sm text-muted-foreground text-center">
-            Don't have an account?{' '}
-            <Link 
-              href="/register" 
-              className="text-primary hover:underline"
-            >
+            Don&apos;t have an account?{' '}
+            <Link href="/register" className="text-primary hover:underline">
               Register
             </Link>
           </p>
@@ -73,4 +66,4 @@ export function LoginForm() {
       </form>
     </Card>
   );
-} 
+}

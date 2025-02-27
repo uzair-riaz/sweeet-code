@@ -2,10 +2,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask import jsonify
+from flask_caching import Cache
 
 db = SQLAlchemy()
 jwt = JWTManager()
 bcrypt = Bcrypt()
+cache = Cache()
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):

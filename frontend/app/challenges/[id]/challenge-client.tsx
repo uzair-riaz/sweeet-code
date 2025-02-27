@@ -5,11 +5,17 @@ import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { PlayIcon, CheckIcon, ArrowsPointingOutIcon, ArrowsPointingInIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
+import {
+  PlayIcon,
+  CheckIcon,
+  ArrowsPointingOutIcon,
+  ArrowsPointingInIcon,
+  ArrowLeftIcon,
+} from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ResultsPanel, TestResult } from './components/results-panel';
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const languageTemplates = {
   cpp: `class Solution {
@@ -45,7 +51,7 @@ var twoSum = function(nums, target) {
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
         // Write your solution here
     }
-}`
+}`,
 };
 
 type ProgrammingLanguage = keyof typeof languageTemplates;
@@ -55,7 +61,7 @@ interface ChallengeClientProps {
 }
 
 export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
-  const { user, getToken } = useAuth();
+  const { getToken } = useAuth();
   const [language, setLanguage] = useState<ProgrammingLanguage>('cpp');
   const [code, setCode] = useState(languageTemplates.cpp);
   const [isResizing, setIsResizing] = useState(false);
@@ -95,11 +101,11 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!isResizing) return;
-      
+
       const minWidth = 320;
       const maxWidth = window.innerWidth * 0.7;
       const newWidth = Math.max(minWidth, Math.min(maxWidth, e.clientX));
-      
+
       setLeftPanelWidth(newWidth);
     },
     [isResizing]
@@ -143,17 +149,17 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           language,
           code,
-          input: ''
-        })
+          input: '',
+        }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         // Handle structured error response
         const errorMessage = data.error || 'Failed to run code';
@@ -163,12 +169,12 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
       // Format the result for display
       const result: TestResult = {
         passed: !data.stderr && !data.compile_output && data.status.id === 3,
-        input: "Custom Input",
-        expected: "N/A",
-        output: data.stdout || "No output",
+        input: 'Custom Input',
+        expected: 'N/A',
+        output: data.stdout || 'No output',
         error: formatError(data) || undefined,
         execution_time: data.time || undefined,
-        memory_used: data.memory || undefined
+        memory_used: data.memory || undefined,
       };
 
       setResults([result]);
@@ -193,18 +199,19 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   const formatError = (data: any): string | null => {
     // Check for compilation errors first
     if (data.compile_output && data.compile_output.trim()) {
-      return data.compile_output.trim();  // Return raw compilation error
+      return data.compile_output.trim(); // Return raw compilation error
     }
-    
+
     // Check for runtime errors
     if (data.stderr && data.stderr.trim()) {
-      return data.stderr.trim();  // Return raw stderr
+      return data.stderr.trim(); // Return raw stderr
     }
 
     // Check for execution status errors
     if (data.status?.id) {
       const statusId = data.status.id;
-      if (statusId !== 3) {  // Status 3 is "Accepted"
+      if (statusId !== 3) {
+        // Status 3 is "Accepted"
         return data.status.description || 'Execution failed';
       }
     }
@@ -220,16 +227,16 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
+          Authorization: token ? `Bearer ${token}` : '',
         },
         body: JSON.stringify({
           language,
-          code
-        })
+          code,
+        }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to submit code');
       }
@@ -281,12 +288,10 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="ghost" size="sm" className="gap-1">
-              ←
-              <span className="text-muted-foreground">Previous</span>
+              ←<span className="text-muted-foreground">Previous</span>
             </Button>
             <Button variant="ghost" size="sm" className="gap-1">
-              <span className="text-muted-foreground">Next</span>
-              →
+              <span className="text-muted-foreground">Next</span>→
             </Button>
           </div>
         </div>
@@ -297,7 +302,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
         {/* Left Panel - Problem Description */}
         {!isFullScreen && (
           <>
-            <div 
+            <div
               className="flex-none bg-card flex flex-col border-r border-border"
               style={{ width: `${leftPanelWidth}px` }}
             >
@@ -313,10 +318,28 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                   {/* Problem Description */}
                   <div className="space-y-6">
                     <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
-                      <p>Given an array of integers <code className="text-foreground font-medium px-1 bg-muted rounded">nums</code> and an integer <code className="text-foreground font-medium px-1 bg-muted rounded">target</code>, return indices of the two numbers such that they add up to <code className="text-foreground font-medium px-1 bg-muted rounded">target</code>.</p>
-                      
-                      <p>You may assume that each input would have <strong className="text-foreground">exactly one solution</strong>, and you may not use the same element twice.</p>
-                      
+                      <p>
+                        Given an array of integers{' '}
+                        <code className="text-foreground font-medium px-1 bg-muted rounded">
+                          nums
+                        </code>{' '}
+                        and an integer{' '}
+                        <code className="text-foreground font-medium px-1 bg-muted rounded">
+                          target
+                        </code>
+                        , return indices of the two numbers such that they add up to{' '}
+                        <code className="text-foreground font-medium px-1 bg-muted rounded">
+                          target
+                        </code>
+                        .
+                      </p>
+
+                      <p>
+                        You may assume that each input would have{' '}
+                        <strong className="text-foreground">exactly one solution</strong>, and you
+                        may not use the same element twice.
+                      </p>
+
                       <p>You can return the answer in any order.</p>
                     </div>
 
@@ -324,17 +347,30 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                       <div className="space-y-3">
                         <h3 className="font-medium text-foreground">Example 1:</h3>
                         <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-                          <p className="text-sm font-mono"><span className="text-muted-foreground">Input: </span>nums = [2,7,11,15], target = 9</p>
-                          <p className="text-sm font-mono"><span className="text-muted-foreground">Output: </span>[0,1]</p>
-                          <p className="text-sm"><span className="text-muted-foreground">Explanation: </span>Because nums[0] + nums[1] = 9, we return [0, 1].</p>
+                          <p className="text-sm font-mono">
+                            <span className="text-muted-foreground">Input: </span>nums =
+                            [2,7,11,15], target = 9
+                          </p>
+                          <p className="text-sm font-mono">
+                            <span className="text-muted-foreground">Output: </span>[0,1]
+                          </p>
+                          <p className="text-sm">
+                            <span className="text-muted-foreground">Explanation: </span>Because
+                            nums[0] + nums[1] = 9, we return [0, 1].
+                          </p>
                         </div>
                       </div>
 
                       <div className="space-y-3">
                         <h3 className="font-medium text-foreground">Example 2:</h3>
                         <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-                          <p className="text-sm font-mono"><span className="text-muted-foreground">Input: </span>nums = [3,2,4], target = 6</p>
-                          <p className="text-sm font-mono"><span className="text-muted-foreground">Output: </span>[1,2]</p>
+                          <p className="text-sm font-mono">
+                            <span className="text-muted-foreground">Input: </span>nums = [3,2,4],
+                            target = 6
+                          </p>
+                          <p className="text-sm font-mono">
+                            <span className="text-muted-foreground">Output: </span>[1,2]
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -342,16 +378,36 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                     <div className="space-y-3">
                       <h3 className="font-medium text-foreground">Constraints:</h3>
                       <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-                        <li><code className="text-foreground font-mono bg-muted/30 px-1 rounded">2 ≤ nums.length ≤ 10⁴</code></li>
-                        <li><code className="text-foreground font-mono bg-muted/30 px-1 rounded">-10⁹ ≤ nums[i] ≤ 10⁹</code></li>
-                        <li><code className="text-foreground font-mono bg-muted/30 px-1 rounded">-10⁹ ≤ target ≤ 10⁹</code></li>
-                        <li><strong className="text-foreground">Only one valid answer exists.</strong></li>
+                        <li>
+                          <code className="text-foreground font-mono bg-muted/30 px-1 rounded">
+                            2 ≤ nums.length ≤ 10⁴
+                          </code>
+                        </li>
+                        <li>
+                          <code className="text-foreground font-mono bg-muted/30 px-1 rounded">
+                            -10⁹ ≤ nums[i] ≤ 10⁹
+                          </code>
+                        </li>
+                        <li>
+                          <code className="text-foreground font-mono bg-muted/30 px-1 rounded">
+                            -10⁹ ≤ target ≤ 10⁹
+                          </code>
+                        </li>
+                        <li>
+                          <strong className="text-foreground">Only one valid answer exists.</strong>
+                        </li>
                       </ul>
                     </div>
 
                     <div className="space-y-3">
                       <h3 className="font-medium text-foreground">Follow-up:</h3>
-                      <p className="text-sm text-muted-foreground">Can you come up with an algorithm that is less than <code className="text-foreground font-mono bg-muted/30 px-1 rounded">O(n²)</code> time complexity?</p>
+                      <p className="text-sm text-muted-foreground">
+                        Can you come up with an algorithm that is less than{' '}
+                        <code className="text-foreground font-mono bg-muted/30 px-1 rounded">
+                          O(n²)
+                        </code>{' '}
+                        time complexity?
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -372,7 +428,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="h-10 border-b border-border flex items-center justify-between px-4 bg-muted/50">
             <div className="flex items-center gap-4">
-              <select 
+              <select
                 className="text-sm bg-transparent border border-border rounded px-2 py-1"
                 value={language}
                 onChange={(e) => handleLanguageChange(e.target.value as ProgrammingLanguage)}
@@ -385,8 +441,8 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="ghost"
                 onClick={() => setIsFullScreen(!isFullScreen)}
                 className="px-2"
@@ -397,12 +453,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                   <ArrowsPointingOutIcon className="h-4 w-4" />
                 )}
               </Button>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                onClick={handleRunCode}
-                disabled={isRunning}
-              >
+              <Button size="sm" variant="outline" onClick={handleRunCode} disabled={isRunning}>
                 {isRunning ? (
                   <>
                     <div className="h-4 w-4 mr-1 animate-spin rounded-full border-2 border-b-transparent border-current" />
@@ -415,12 +466,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                   </>
                 )}
               </Button>
-              <Button 
-                size="sm" 
-                variant="default" 
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-              >
+              <Button size="sm" variant="default" onClick={handleSubmit} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="h-4 w-4 mr-1 animate-spin rounded-full border-2 border-b-transparent border-current" />
@@ -447,8 +493,8 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                 options={editorOptions}
               />
               {showResults && (
-                <ResultsPanel 
-                  results={results} 
+                <ResultsPanel
+                  results={results}
                   onClose={() => setShowResults(false)}
                   mode={isSubmitting ? 'submit' : 'run'}
                 />
@@ -459,4 +505,4 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
       </div>
     </div>
   );
-} 
+}

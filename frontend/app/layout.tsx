@@ -1,30 +1,26 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { AuthProvider } from "@/lib/auth-context";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { Toaster } from "sonner";
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { AuthProvider } from '@/lib/auth-context';
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from 'sonner';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Your Elegant Application",
-  description: "An elegant application with gold and grey theme",
+  title: 'Your Elegant Application',
+  description: 'An elegant application with gold and grey theme',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -35,7 +31,7 @@ export default function RootLayout({
               <Toaster
                 position="top-center"
                 toastOptions={{
-                  className: "border border-gold/20",
+                  className: 'border border-gold/20',
                   style: {
                     background: 'var(--card)',
                     color: 'var(--card-foreground)',
@@ -56,7 +52,7 @@ export default function RootLayout({
                       borderLeft: '4px solid #D4AF37',
                     },
                   },
-                }}
+                } as any}
               />
             </AuthProvider>
           </div>

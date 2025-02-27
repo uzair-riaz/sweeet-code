@@ -1,11 +1,9 @@
 'use client';
 
-import React from 'react';
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { Header } from "@/components/Header";
+import { Header } from '@/components/Header';
 
 const challenges = [
   {
@@ -24,28 +22,20 @@ const challenges = [
 ];
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    logout();
-    router.replace('/');
-  };
+  const { user } = useAuth();
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-semibold">Coding Challenges</h1>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {user?.username}
-            </span>
+            <span className="text-sm text-muted-foreground">Welcome, {user?.username}</span>
           </div>
         </div>
-        
+
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm">
@@ -59,10 +49,10 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
-        
+
         <div className="grid gap-4">
           {challenges.map((challenge) => (
-            <Link 
+            <Link
               key={challenge.id}
               href={`/challenges/${challenge.id}`}
               className="p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
@@ -75,11 +65,15 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span>{challenge.acceptance} acceptance</span>
-                  <span className={
-                    challenge.difficulty === 'Easy' ? 'text-emerald-500' :
-                    challenge.difficulty === 'Medium' ? 'text-amber-500' :
-                    'text-red-500'
-                  }>
+                  <span
+                    className={
+                      challenge.difficulty === 'Easy'
+                        ? 'text-emerald-500'
+                        : challenge.difficulty === 'Medium'
+                          ? 'text-amber-500'
+                          : 'text-red-500'
+                    }
+                  >
                     {challenge.difficulty}
                   </span>
                 </div>
@@ -90,4 +84,4 @@ export default function DashboardPage() {
       </main>
     </div>
   );
-} 
+}

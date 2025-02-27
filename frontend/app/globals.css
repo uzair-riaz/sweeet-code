@@ -6,60 +6,60 @@
   :root {
     --background: 0 0% 98%;
     --foreground: 0 0% 15%;
-    
+
     --card: 0 0% 100%;
     --card-foreground: 0 0% 15%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 15%;
-    
+
     --primary: 43 77% 52%; /* Gold */
     --primary-foreground: 0 0% 15%;
-    
+
     --secondary: 0 0% 96%; /* Light Grey */
     --secondary-foreground: 0 0% 15%;
-    
+
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 45%;
-    
+
     --accent: 43 77% 52%; /* Gold */
     --accent-foreground: 0 0% 15%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 0 0% 89%;
     --input: 0 0% 89%;
     --ring: 43 77% 52%; /* Gold */
-    
+
     --radius: 0.5rem;
   }
-  
+
   .dark {
     --background: 0 0% 15%;
     --foreground: 0 0% 98%;
-    
+
     --card: 0 0% 20%;
     --card-foreground: 0 0% 98%;
-    
+
     --popover: 0 0% 20%;
     --popover-foreground: 0 0% 98%;
-    
+
     --primary: 43 77% 52%; /* Gold */
     --primary-foreground: 0 0% 15%;
-    
+
     --secondary: 0 0% 25%; /* Dark Grey */
     --secondary-foreground: 0 0% 98%;
-    
+
     --muted: 0 0% 25%;
     --muted-foreground: 0 0% 65%;
-    
+
     --accent: 43 77% 52%; /* Gold */
     --accent-foreground: 0 0% 15%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    
+
     --border: 0 0% 30%;
     --input: 0 0% 30%;
     --ring: 43 77% 52%; /* Gold */
@@ -73,31 +73,36 @@
   body {
     @apply bg-background text-foreground;
   }
-  
+
   /* Gold accents for headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply text-gold-dark dark:text-gold-light;
   }
-  
+
   /* Gold accents for links */
   a {
     @apply text-gold-dark hover:text-gold dark:text-gold-light dark:hover:text-gold;
   }
-  
+
   /* Custom button styles */
   .btn-gold {
     @apply bg-gold text-grey-darker hover:bg-gold-dark transition-colors duration-300;
   }
-  
+
   .btn-grey {
     @apply bg-grey-light text-grey-darker hover:bg-grey transition-colors duration-300;
   }
-  
+
   /* Elegant card styles */
   .elegant-card {
     @apply bg-white dark:bg-grey-darker border border-grey-light dark:border-grey-dark rounded-md shadow-md;
   }
-  
+
   /* Gold divider */
   .gold-divider {
     @apply h-px bg-gradient-to-r from-transparent via-gold to-transparent my-4;
@@ -119,8 +124,6 @@
   -moz-user-select: none !important;
   -ms-user-select: none !important;
 }
-
-
 
 @layer base {
   * {

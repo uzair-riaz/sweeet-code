@@ -1,9 +1,9 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface User {
   id: number;
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await fetch('http://localhost:5000/api/auth/refresh', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${refreshToken}`,
+          Authorization: `Bearer ${refreshToken}`,
         },
       });
 
@@ -129,15 +129,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!storedUser) return null;
 
       const userData = JSON.parse(storedUser);
-      
+
       // Try to use the existing token first
       try {
         const response = await fetch('http://localhost:5000/api/auth/verify', {
           headers: {
-            'Authorization': `Bearer ${userData.token}`,
+            Authorization: `Bearer ${userData.token}`,
           },
         });
-        
+
         if (response.ok) {
           return userData.token;
         }
@@ -173,4 +173,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

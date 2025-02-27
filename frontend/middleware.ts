@@ -3,10 +3,11 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token');
-  const isAuthPage = request.nextUrl.pathname === '/login' || 
-                     request.nextUrl.pathname === '/register';
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
-                          request.nextUrl.pathname.startsWith('/challenges');
+  const isAuthPage =
+    request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register';
+  const isProtectedRoute =
+    request.nextUrl.pathname.startsWith('/dashboard') ||
+    request.nextUrl.pathname.startsWith('/challenges');
 
   // If trying to access auth pages while logged in
   if (isAuthPage && token) {
@@ -22,5 +23,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/challenges/:path*', '/login', '/register']
-}; 
+  matcher: ['/', '/dashboard/:path*', '/challenges/:path*', '/login', '/register'],
+};
