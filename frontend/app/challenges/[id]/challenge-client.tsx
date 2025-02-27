@@ -9,6 +9,7 @@ import { PlayIcon, CheckIcon, ArrowsPointingOutIcon, ArrowsPointingInIcon, Arrow
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { ResultsPanel, TestResult } from './components/results-panel';
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const languageTemplates = {
   cpp: `class Solution {
@@ -278,6 +279,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
             <span className="text-sm text-muted-foreground">Problem {challengeId}</span>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="sm" className="gap-1">
               ←
               <span className="text-muted-foreground">Previous</span>

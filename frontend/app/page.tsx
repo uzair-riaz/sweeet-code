@@ -1,27 +1,11 @@
-import Link from "next/link";
+import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Navigation */}
-      <header className="border-b">
-        <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <span className="font-mono text-xl font-bold">{"{ }"}</span>
-            <span className="font-semibold text-xl">Sweeet Code</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/login">
-              <Button variant="ghost">Log in</Button>
-            </Link>
-            <Link href="/register">
-              <Button>Sign up</Button>
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <main className="flex-1">
@@ -115,10 +99,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      <div className="flex justify-end mb-4">
-        <ThemeToggle />
-      </div>
     </div>
   );
 }

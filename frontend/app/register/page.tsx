@@ -15,6 +15,8 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import { Header } from "@/components/Header";
+import { RegisterForm } from "@/components/RegisterForm";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -38,68 +40,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
-          <CardDescription className="text-center">
-            Enter your details to get started
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="johndoe"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Creating account...' : 'Register'}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Already have an account?{' '}
-              <Link 
-                href="/login" 
-                className="text-primary hover:underline"
-              >
-                Login
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
+    <div className="flex min-h-screen flex-col">
+      <Header showAuthButtons={false} />
+      
+      <main className="flex-1 flex items-center justify-center">
+        <div className="w-full max-w-md p-8">
+          <h1 className="text-2xl font-bold mb-6 text-center">Create an account</h1>
+          <RegisterForm />
+        </div>
+      </main>
     </div>
   );
 } 
