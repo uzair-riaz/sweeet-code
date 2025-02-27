@@ -21,7 +21,7 @@ CHALLENGE_TEST_CASES = {
     # Add more challenges with their test cases
 }
 
-@challenges_bp.route('/api/challenges', methods=['GET'])
+@challenges_bp.route('/challenges', methods=['GET'])
 @cache.cached(timeout=300)  # Cache for 5 minutes
 def get_all_challenges():
     """Get all available challenges"""
@@ -36,7 +36,7 @@ def get_all_challenges():
     ]
     return jsonify(challenges)
 
-@challenges_bp.route('/api/challenges/<challenge_id>', methods=['GET'])
+@challenges_bp.route('/challenges/<challenge_id>', methods=['GET'])
 @cache.cached(timeout=300, query_string=True)  # Cache for 5 minutes
 def get_challenge(challenge_id):
     """Get a specific challenge by ID"""
@@ -49,7 +49,7 @@ def get_challenge(challenge_id):
     }
     return jsonify(challenge)
 
-@challenges_bp.route('/api/challenges/<challenge_id>/submit', methods=['POST'])
+@challenges_bp.route('/challenges/<challenge_id>/submit', methods=['POST'])
 @jwt_required()
 async def submit_solution(challenge_id):
     data = request.get_json()

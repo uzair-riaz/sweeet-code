@@ -16,7 +16,7 @@ spec:
       - name: sweeet-code
         image: gcr.io/perfect-operand-451118-j4/sweeet-code:latest  # Replace with your image
         ports:
-        - containerPort: 5000
+        - containerPort: 8000
         env:  # Add environment variables for database connection, etc.
           - name: DB_HOST
             value: "cloud-sql-proxy-address"  # Use Cloud SQL Proxy in sidecar container
