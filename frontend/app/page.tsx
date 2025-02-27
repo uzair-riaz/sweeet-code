@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -114,6 +115,10 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <div className="flex justify-end mb-4">
+        <ThemeToggle />
+      </div>
     </div>
   );
 }

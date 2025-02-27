@@ -439,7 +439,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                 height="100%"
                 defaultLanguage={language}
                 language={language}
-                theme="light"
+                theme="vs-dark"
                 value={code}
                 onChange={(value) => setCode(value || '')}
                 options={editorOptions}

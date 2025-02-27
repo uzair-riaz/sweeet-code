@@ -49,7 +49,18 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+            gold: {
+                DEFAULT: '#D4AF37',
+                light: '#F5D76E',
+                dark: '#B8860B',
+            },
+            grey: {
+                DEFAULT: '#808080',
+                light: '#D3D3D3',
+                dark: '#404040',
+                darker: '#2A2A2A',
+            }
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
