@@ -41,24 +41,9 @@ variable "db_password" {
   sensitive   = true # Mark as sensitive to prevent display in output
 }
 
-variable "firestore_db_name" {
-  type        = string
-  description = "The name of the Firestore database"
-}
-
 variable "redis_cache_instance_id" {
   type        = string
   description = "The ID of the Redis cache instance"
-}
-
-variable "bigquery_dataset_id" {
-  type        = string
-  description = "The ID of the BigQuery dataset"
-}
-
-variable "cloud_storage_bucket_name" {
-  type        = string
-  description = "The name of the Cloud Storage bucket"
 }
 
 variable "machine_type" {

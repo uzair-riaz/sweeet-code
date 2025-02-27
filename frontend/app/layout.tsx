@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Your Elegant Application',
-  description: 'An elegant application with gold and grey theme',
+  title: 'Sweeet Code',
+  description: 'Master the art of writing elegant, maintainable code',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
