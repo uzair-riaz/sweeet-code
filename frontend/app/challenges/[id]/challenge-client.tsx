@@ -1,21 +1,22 @@
 'use client';
 
-import React, { useState, useCallback, useEffect } from 'react';
-import { useAuth } from '@/lib/auth-context';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/lib/auth-context';
+import { executeCode, submitChallengeSolution } from '@/services/code-execution-service';
+import {
+  ArrowLeftIcon,
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  CheckIcon,
+  PlayIcon,
+} from '@heroicons/react/24/solid';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import {
-  PlayIcon,
-  CheckIcon,
-  ArrowsPointingOutIcon,
-  ArrowsPointingInIcon,
-  ArrowLeftIcon,
-} from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { ResultsPanel, TestResult } from './components/results-panel';
-import { ThemeToggle } from '@/components/ThemeToggle';
 
 const languageTemplates = {
   cpp: `class Solution {
@@ -145,26 +146,11 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
         throw new Error('Please login to continue');
       }
 
-      const response = await fetch('http://localhost:5000/api/run', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          language,
-          code,
-          input: '',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // Handle structured error response
-        const errorMessage = data.error || 'Failed to run code';
-        throw new Error(errorMessage);
-      }
+      const data = await executeCode({
+        language,
+        code,
+        input: '',
+      }, token);
 
       // Format the result for display
       const result: TestResult = {
@@ -222,24 +208,19 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/challenges/${challengeId}/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
-        },
-        body: JSON.stringify({
+      const token = await getToken();
+      if (!token) {
+        throw new Error('Please login to continue');
+      }
+
+      const data = await submitChallengeSolution(
+        challengeId,
+        {
           language,
           code,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit code');
-      }
+        },
+        token
+      );
 
       setResults(data.results);
       setShowResults(true);

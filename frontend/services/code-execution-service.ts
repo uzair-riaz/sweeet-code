@@ -14,8 +14,8 @@ export interface CodeExecutionResult {
   stdout: string;
   stderr: string;
   compile_output: string;
-  time: string;
-  memory: string;
+  time: number;
+  memory: number;
 }
 
 export interface ChallengeSubmissionResult {
@@ -26,8 +26,8 @@ export interface ChallengeSubmissionResult {
     expected: any;
     output: string;
     error: string;
-    execution_time: string;
-    memory_used: string;
+    execution_time: number;
+    memory_used: number;
   }>;
 }
 
