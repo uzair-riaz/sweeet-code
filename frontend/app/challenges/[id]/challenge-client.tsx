@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from '@/components/ui/button';
 import Editor from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
 import { PlayIcon, CheckIcon, ArrowsPointingOutIcon, ArrowsPointingInIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -247,6 +248,20 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
     }
   };
 
+  const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
+    minimap: { enabled: false },
+    fontSize: 14,
+    lineNumbers: 'on',
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    tabSize: 4,
+    insertSpaces: true,
+    padding: { top: 16, bottom: 16 },
+    overviewRulerBorder: false,
+    overviewRulerLanes: 0,
+    hideCursorInOverviewRuler: true,
+  };
+
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Navigation Bar */}
@@ -427,16 +442,7 @@ export default function ChallengeClient({ challengeId }: ChallengeClientProps) {
                 theme="light"
                 value={code}
                 onChange={(value) => setCode(value || '')}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                  tabSize: 4,
-                  insertSpaces: true,
-                  padding: { top: 16, bottom: 16 },
-                }}
+                options={editorOptions}
               />
               {showResults && (
                 <ResultsPanel 
